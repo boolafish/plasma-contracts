@@ -1,0 +1,15 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - wget https://github.com/ethereum/solidity/releases/download/v0.4.24/solc-static-linux && chmod +x ./solc-static-linux && sudo mv solc-static-linux /usr/bin/solc
+      - pip install --upgrade pip setuptools flake8
+      - make init
+      - make dev
+  # build:
+  #   commands:
+  #     - make test
+  post_build:
+    commands:
+      - make lint
