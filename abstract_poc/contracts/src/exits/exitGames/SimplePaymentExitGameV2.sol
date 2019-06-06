@@ -12,6 +12,7 @@ import "../../framework/interfaces/ExitProcessor.sol";
 import "../../transactions/outputs/DexOutputModel.sol";
 import "../../transactions/txs/FundingTxModel.sol";
 import "../../transactions/txs/SimplePaymentTxModel.sol";
+import "../../utils/AddressPayable.sol";
 
 /**
 MVP
@@ -43,8 +44,9 @@ contract SimplePaymentExitGameV2 is ExitProcessor {
         SimplePaymentExitDataModelV2.Data memory exitData = SimplePaymentExitDataModelV2.Data({
             exitId: exitId,
             exitable: true,
+            outputId: _utxoPos,
             token: outputTx.dexOutputs[outputIndex].outputData.token,
-            exitTarget: outputTx.dexOutputs[outputIndex].outputData.owner,
+            exitTarget: AddressPayable.transfer(outputTx.dexOutputs[outputIndex].outputData.owner),
             amount: outputTx.dexOutputs[outputIndex].outputData.amount
         });
         exits[exitId] = exitData;
@@ -61,7 +63,7 @@ contract SimplePaymentExitGameV2 is ExitProcessor {
         uint256 _challengeTxType,
         uint8 _inputIndex
     ) external {
-        SimplePaymentExitDataModelV2 exitData = exits[_exitId];
+        SimplePaymentExitDataModelV2.Data memory exitData = exits[_exitId];
         require(exitData.exitable == true, "Exit is not exitable");
 
         if(_challengeTxType == SimplePaymentTxModel.getTxType()) {
@@ -75,6 +77,11 @@ contract SimplePaymentExitGameV2 is ExitProcessor {
     }
 
     function processExit(uint256 _exitId) external {
+        SimplePaymentExitDataModelV2.Data memory exitData = exits[_exitId];
+        require(exitData.exitable == true, "Exit is not exitable");
 
+        if (exitData.exitable && exitData.token == address(0)) {
+            ethVault.withdraw(exitData.exitTarget, exitData.amount);
+        }
     }
 }

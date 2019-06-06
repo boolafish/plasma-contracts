@@ -8,6 +8,7 @@ import "../../framework/models/ExitModel.sol";
 import "../../framework/interfaces/OutputPredicate.sol";
 import "../../transactions/outputs/PaymentOutputModel.sol";
 import "../../transactions/txs/SimplePaymentTxModel.sol";
+import "../../utils/AddressPayable.sol";
 
 /**
  Using MoreVp, POC skiping IFE
@@ -46,7 +47,7 @@ contract SimplePaymentExitGame {
             exitable: true,
             outputHash: outputTx.outputs[outputIndex].hash(),
             token: outputTx.outputs[outputIndex].outputData.token,
-            exitTarget: outputTx.outputs[outputIndex].outputData.owner,
+            exitTarget: AddressPayable.transfer(outputTx.outputs[outputIndex].outputData.owner),
             amount: outputTx.outputs[outputIndex].outputData.amount
         });
 

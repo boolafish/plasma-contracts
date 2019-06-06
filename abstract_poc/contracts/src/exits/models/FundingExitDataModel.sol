@@ -6,7 +6,7 @@ library FundingExitDataModel {
         bool exitable;
         bytes32 outputHash;
         address token;
-        address exitTarget;
+        address payable exitTarget;
         uint256 amount;
     }
 }

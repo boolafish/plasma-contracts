@@ -6,7 +6,7 @@ library SimplePaymentExitDataModelV2 {
         bool exitable;
         uint256 outputId;
         address token;
-        address exitTarget;
+        address payable exitTarget;
         uint256 amount;
     }
 }

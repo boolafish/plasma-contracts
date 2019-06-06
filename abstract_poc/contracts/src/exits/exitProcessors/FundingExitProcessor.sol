@@ -3,10 +3,10 @@ pragma experimental ABIEncoderV2;
 
 import "./OnlyFramework.sol";
 import "../models/FundingExitDataModel.sol";
-import "../../WithFramework.sol";
 import "../../vaults/EthVault.sol";
+import "../../framework/interfaces/ExitProcessor.sol";
 
-contract FundingExitProcessor is WithFramework, OnlyFramework {
+contract FundingExitProcessor is OnlyFramework, ExitProcessor {
     uint256 constant TX_TYPE = 2;
 
     PlasmaFramework framework;

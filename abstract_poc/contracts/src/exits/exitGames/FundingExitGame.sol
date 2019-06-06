@@ -7,6 +7,7 @@ import "../../framework/models/ExitModel.sol";
 import "../../framework/interfaces/OutputPredicate.sol";
 import "../../transactions/outputs/DexOutputModel.sol";
 import "../../transactions/txs/FundingTxModel.sol";
+import "../../utils/AddressPayable.sol";
 
 /**
 MVP
@@ -42,7 +43,7 @@ contract FundingExitGame {
             exitable: true,
             outputHash: outputTx.dexOutputs[outputIndex].hash(),
             token: outputTx.dexOutputs[outputIndex].outputData.token,
-            exitTarget: outputTx.dexOutputs[outputIndex].outputData.owner,
+            exitTarget: AddressPayable.transfer(outputTx.dexOutputs[outputIndex].outputData.owner),
             amount: outputTx.dexOutputs[outputIndex].outputData.amount
         });
 
