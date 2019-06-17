@@ -293,15 +293,11 @@ library RLP {
         pure
         returns (uint data)
     {
-        if (!isData(self)) {
-            revert();
-        }
+        require(isData(self), "These are not RLP encoded bytes");
         uint rStartPos;
         uint len;
         (rStartPos, len) = _decode(self);
-        if (len > 32) {
-            revert();
-        }
+        require(len <= 32, "These are not RLP encoded bytes32");
         assembly {
             data := div(mload(rStartPos), exp(256, sub(32, len)))
         }
@@ -587,12 +583,14 @@ library RLP {
         // we can write entire words, and just overwrite any excess.
         assembly {
             {
+                let i := 0
                 let words := div(add(btsLen, 31), 32)
                 let rOffset := btsPtr
                 let wOffset := add(tgt, 0x20)
-                for {let i := 0} lt(i, words) {i := add(i, 1)} {
+                for { } lt(i, words) { } {
                     let offset := mul(i, 0x20)
                     mstore(add(wOffset, offset), mload(add(rOffset, offset)))
+                    i := add(i, 1)
                 }
                 mstore(add(tgt, add(0x20, mload(tgt))), 0)
             }

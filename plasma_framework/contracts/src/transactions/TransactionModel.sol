@@ -22,34 +22,34 @@ library TransactionModel {
     }
 
     function decode(bytes memory _tx) internal view returns (TransactionModel.Transaction memory) {
-      RLP.RLPItem[] memory rlpTx = _tx.toRLPItem().toList();
-      require(rlpTx.length == 4 || rlpTx.length == 3, "Invalid encoding of transaction");
+        RLP.RLPItem[] memory rlpTx = _tx.toRLPItem().toList();
+        require(rlpTx.length == 4 || rlpTx.length == 3, "Invalid encoding of transaction");
 
-      TransactionModel.Transaction memory decodedTx;
-      decodedTx.txType = rlpTx[0].toUint();
+        uint txType = rlpTx[0].toUint();
 
-      RLP.RLPItem[] memory rlpInputs = rlpTx[1].toList();
-      require(rlpInputs.length > 0, "Transaction must have inputs");
-      decodedTx.inputs = new bytes32[](rlpInputs.length);
-      for (uint i = 0; i < rlpInputs.length; i++) {
-        bytes32 input = rlpInputs[0].toBytes32();
-        decodedTx.inputs[i] = input;
-      }
+        RLP.RLPItem[] memory rlpInputs = rlpTx[1].toList();
+        require(rlpInputs.length > 0, "Transaction must have inputs");
+        bytes32[] memory inputs = new bytes32[](rlpInputs.length);
+        for (uint i = 0; i < rlpInputs.length; i++) {
+            bytes32 input = rlpInputs[i].toBytes32();
+            inputs[i] = input;
+        }
 
-      RLP.RLPItem[] memory rlpOutputs = rlpTx[2].toList();
-      require(rlpOutputs.length > 1, "Transaction must have outputs");
-      decodedTx.outputs = new OutputModel.TxOutput[](rlpOutputs.length);
-      for (uint i = 0; i < rlpOutputs.length; i++) {
-        OutputModel.TxOutput memory output = rlpOutputs[0].decodeOutput();
-        decodedTx.outputs[i] = output;
-      }
+        RLP.RLPItem[] memory rlpOutputs = rlpTx[2].toList();
+        require(rlpOutputs.length > 0, "Transaction must have outputs");
+        OutputModel.TxOutput[] memory outputs = new OutputModel.TxOutput[](rlpOutputs.length);
+        for (uint i = 0; i < rlpOutputs.length; i++) {
+            OutputModel.TxOutput memory output = rlpOutputs[i].decodeOutput();
+            outputs[i] = output;
+        }
 
-      if (rlpTx.length == 4) {
-          decodedTx.metaData = MetaData(rlpTx[3].toBytes32());
-      } else {
-          decodedTx.metaData = MetaData("");
-      }
+        MetaData memory metaData;
+        if (rlpTx.length == 4) {
+            metaData = MetaData(rlpTx[3].toBytes32());
+        } else {
+            metaData = MetaData("");
+        }
 
-      return decodedTx;
+        return Transaction({txType: txType, inputs: inputs, outputs: outputs, metaData: metaData});
     }
 }
