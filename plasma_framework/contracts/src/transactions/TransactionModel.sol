@@ -37,7 +37,7 @@ library TransactionModel {
       }
 
       RLP.RLPItem[] memory rlpOutputs = rlpTx[2].toList();
-      require(rlpOutputs.length > 1, "Transaction must have outputs");
+      require(rlpOutputs.length > 0, "Transaction must have outputs");
       decodedTx.outputs = new OutputModel.TxOutput[](rlpOutputs.length);
       for (uint i = 0; i < rlpOutputs.length; i++) {
         OutputModel.TxOutput memory output = rlpOutputs[0].decodeOutput();

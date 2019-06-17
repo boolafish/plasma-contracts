@@ -6,6 +6,11 @@ contract VaultRegistry is Operated {
     mapping(uint256 => address) private _vaults;
     mapping(address => uint256) private _vaultToId;
 
+    modifier onlyFromVault() {
+        require(_vaultToId[msg.sender] != 0, "Not from registered vault");
+        _;
+    }
+
     /**
      * @notice Register the vault to Plasma framework. This can be only called by contract admin.
      * @param _vaultId the id for the vault contract to register.
