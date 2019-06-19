@@ -2,6 +2,7 @@ pragma solidity ^0.5.0;
 
 import "./ZeroHashesProvider.sol";
 import "../framework/PlasmaFramework.sol";
+import "./predicates/IEthDepositVerifier.sol";
 import {TransactionModel as DepositTx} from "../transactions/TransactionModel.sol";
 
 contract EthVault {
@@ -9,12 +10,16 @@ contract EthVault {
 
     PlasmaFramework framework;
     bytes32[16] zeroHashes;
-
-    using DepositTx for DepositTx.Transaction;
+    IEthDepositVerifier depositVerifier;
 
     constructor(address _framework) public {
         framework = PlasmaFramework(_framework);
         zeroHashes = ZeroHashesProvider.getZeroHashes();
+    }
+
+    // TODO: only from operator
+    function setDepositable(address _contract) public {
+        depositVerifier = IEthDepositVerifier(_contract);
     }
 
     /**
@@ -22,9 +27,7 @@ contract EthVault {
      * @param _depositTx RLP encoded transaction to act as the deposit.
      */
     function deposit(bytes calldata _depositTx) external payable {
-        DepositTx.Transaction memory decodedTx = DepositTx.decode(_depositTx);
-
-        _validateDepositFormat(decodedTx);
+        depositVerifier.verify(_depositTx, msg.value, msg.sender);
 
         bytes32 root = keccak256(_depositTx);
         for (uint i = 0; i < 16; i++) {
@@ -32,21 +35,6 @@ contract EthVault {
         }
 
         framework.submitDepositBlock(root);
-    }
-
-    function _validateDepositFormat(DepositTx.Transaction memory deposit) private {
-      require(deposit.txType == DEPOSIT_TX_TYPE, "Invalid transaction type");
-
-      //Deposit has one input and it's id is 0
-      require(deposit.inputs.length == 1, "Invalid number of inputs");
-      require(deposit.inputs[0] == bytes32(0));
-
-      require(deposit.outputs.length == 1, "Invalid number of outputs");
-      require(deposit.outputs[0].amount == msg.value, "Deposited value does not match sent amount");
-      require(deposit.outputs[0].token == address(0), "Output does not have correct currency (ETH)");
-
-      address depositorsAddress = address(uint160(uint256(deposit.outputs[0].outputGuard)));
-      require(depositorsAddress == msg.sender, "Depositors address does not match senders address");
     }
 
     //TODO: must be called only from exit processors, should be guarded by modifier
