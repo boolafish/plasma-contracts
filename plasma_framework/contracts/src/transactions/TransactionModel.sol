@@ -23,24 +23,23 @@ library TransactionModel {
 
     function decode(bytes memory _tx) internal view returns (TransactionModel.Transaction memory) {
         RLP.RLPItem[] memory rlpTx = _tx.toRLPItem().toList();
+        RLP.RLPItem[] memory rlpInputs = rlpTx[1].toList();
+        RLP.RLPItem[] memory rlpOutputs = rlpTx[2].toList();
+
         require(rlpTx.length == 4 || rlpTx.length == 3, "Invalid encoding of transaction");
+        require(rlpInputs.length > 0, "Transaction must have inputs");
+        require(rlpOutputs.length > 0, "Transaction must have outputs");
 
         uint txType = rlpTx[0].toUint();
 
-        RLP.RLPItem[] memory rlpInputs = rlpTx[1].toList();
-        require(rlpInputs.length > 0, "Transaction must have inputs");
         bytes32[] memory inputs = new bytes32[](rlpInputs.length);
         for (uint i = 0; i < rlpInputs.length; i++) {
-            bytes32 input = rlpInputs[i].toBytes32();
-            inputs[i] = input;
+            inputs[i] = rlpInputs[i].toBytes32();
         }
 
-        RLP.RLPItem[] memory rlpOutputs = rlpTx[2].toList();
-        require(rlpOutputs.length > 0, "Transaction must have outputs");
         OutputModel.TxOutput[] memory outputs = new OutputModel.TxOutput[](rlpOutputs.length);
         for (uint i = 0; i < rlpOutputs.length; i++) {
-            OutputModel.TxOutput memory output = rlpOutputs[i].decodeOutput();
-            outputs[i] = output;
+            outputs[i] = rlpOutputs[i].decodeOutput();
         }
 
         MetaData memory metaData;

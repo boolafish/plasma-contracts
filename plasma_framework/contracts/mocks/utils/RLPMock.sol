@@ -8,7 +8,7 @@ contract RLPMock {
     using RLP for RLP.RLPItem;
 
     function decodeBytes(bytes memory _data) public view returns (bytes memory) {
-        return _data.toRLPItem().toData();
+        return _data.toRLPItem().toBytes();
     }
 
     function decodeBytes32(bytes memory _data) public view returns (bytes32) {

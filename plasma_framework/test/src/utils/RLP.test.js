@@ -14,20 +14,20 @@ contract("RLP", accounts => {
 
     it("should decode bytes", async () => {
         const expected = Buffer.alloc(10, 1);
-        const actual = Buffer.from(
-            web3.utils.hexToBytes(await this.test.decodeBytes(expected, expected)) //FIXME: What's withthis double
-        );
-        expect(actual.compare(expected)).to.equal(0);
+        const expectedInHex = web3.utils.bytesToHex(expected);
+        const actual = await this.test.decodeBytes(expectedInHex);
+        expect(actual).to.equal(expectedInHex);
     });
 
     it("should decode bytes32", async () => {
-        const expected = Buffer.alloc(32, 1);
-
+        const expected = Uint8Array.from(Buffer.alloc(32, 1));
+        const expectedInHex = web3.utils.bytesToHex(expected);
+        
         const encoded = rlp.encode(expected);
-        const actual = Buffer.from(
-            web3.utils.hexToBytes(await this.test.decodeBytes32(encoded, encoded))
-        );
-        expect(actual.compare(expected)).to.equal(0);
+        const encodedInHex = web3.utils.bytesToHex(encoded);
+        
+        const actual = await this.test.decodeBytes32(encodedInHex);
+        expect(actual).to.equal(expectedInHex);
     });
 
     it("should decode bool", async () => {

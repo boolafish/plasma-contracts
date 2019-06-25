@@ -39,7 +39,7 @@ contract EthVault {
 
       //Deposit has one input and it's id is 0
       require(deposit.inputs.length == 1, "Invalid number of inputs");
-      require(deposit.inputs[0] == bytes32(0));
+      require(deposit.inputs[0] == bytes32(0), "Deposit input must be bytes32 of 0");
 
       require(deposit.outputs.length == 1, "Invalid number of outputs");
       require(deposit.outputs[0].amount == msg.value, "Deposited value does not match sent amount");
