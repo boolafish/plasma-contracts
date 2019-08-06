@@ -18,7 +18,8 @@ commands:
       - checkout
       - run:
           name: Set up environment
-          command: echo 'export PATH="$(npm bin):$PATH"' >> $BASH_ENV
+          command: |
+            echo 'export PATH="$(npm bin):$PATH"' >> $BASH_ENV
       - restore_cache:
           keys:
             - v2-dependencies-{{ checksum "plasma_framework/package.json" }}
@@ -63,6 +64,8 @@ jobs:
           name: Run tests
           command: truffle test 
           working_directory: ~/repo/plasma_framework
+          environment:
+            MOCHA_REPORTER: eth-gas-reporter
 
   Truffle linter:
     executor: truffle_executor
