@@ -66,6 +66,7 @@ jobs:
           working_directory: ~/repo/plasma_framework
           environment:
             MOCHA_REPORTER: eth-gas-reporter
+      - run: npx codechecks
 
   Truffle linter:
     executor: truffle_executor
