@@ -1,4 +1,4 @@
-pragma solidity 0.5.11;
+pragma solidity 0.5.12;
 
 /**
  * @title Provides a way to quarantine (disable) contracts for a period of time

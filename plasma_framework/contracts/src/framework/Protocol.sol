@@ -1,4 +1,4 @@
-pragma solidity 0.5.11;
+pragma solidity 0.5.12;
 
 library Protocol {
     uint8 constant internal MVP_VALUE = 1;

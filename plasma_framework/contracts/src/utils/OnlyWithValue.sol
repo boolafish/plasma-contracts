@@ -1,4 +1,4 @@
-pragma solidity 0.5.11;
+pragma solidity 0.5.12;
 
 contract OnlyWithValue {
     modifier onlyWithValue(uint256 _value) {
