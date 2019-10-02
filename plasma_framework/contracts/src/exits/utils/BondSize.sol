@@ -31,6 +31,10 @@ library BondSize {
         pure
         returns (Params memory)
     {
+        // These requires would make compile to fail without optimizer on
+        // This contract itself would be fine, the problem seems to be the caller of this function cannot be inside constructor
+        // See this commit that solves the compiler issue:
+        // https://github.com/omisego/plasma-contracts/commit/b1161ef823076d978b925cd4f23776915bfcc020
         require(initialBondSize > 0, "initialBondSize cannot be 0");
         require(lowerBoundDivisor > 0, "lowerBoundDivisor cannot be 0");
         require(upperBoundMultiplier > 0, "upperBoundMultiplier cannot be 0");
