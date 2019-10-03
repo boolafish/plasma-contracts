@@ -71,7 +71,7 @@ contract Vault is Operated {
 
     /**
      * @dev Function that should be called by the child contract inheritancing this on deposit.
-     *      It would submit the deposit block to the framework.
+     *      Submit a deposit block to the PlasmaFramework.
      */
     function _submitDepositBlock(bytes memory _depositTx) internal returns (uint256) {
         bytes32 root = keccak256(_depositTx);
