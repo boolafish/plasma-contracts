@@ -27,7 +27,7 @@ contract Erc20Vault is Vault {
 
     /**
      * @notice Deposits approved amount of ERC20 token(s) into the contract.
-     * owner perform transactions on the OMG network.
+     * Once the deposit is recognized, the owner is able to make transactions on the OMG network.
      * The approve function of the ERC20 token contract needs to be called before this function is called
      * for at least the amount that is deposited into the contract.
      * @param _depositTx RLP encoded transaction to act as the deposit.
@@ -44,7 +44,7 @@ contract Erc20Vault is Vault {
     }
 
     /**
-    * @notice Withdraw ERC20 tokens that have exited the plasma chain successfully.
+    * @notice Withdraw ERC20 tokens that have been exited from the OMG network successfully.
     * @param _target address of the transferee
     * @param _token address of ERC20 token contract.
     * @param _amount amount to transfer.
