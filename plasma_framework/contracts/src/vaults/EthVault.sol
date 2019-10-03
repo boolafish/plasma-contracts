@@ -20,7 +20,8 @@ contract EthVault is Vault {
     constructor(PlasmaFramework _framework) public Vault(_framework) {}
 
     /**
-     * @notice Allows a user to submit a deposit.
+     * @notice Allows a user to deposit ETH into the contract.
+     * Once the deposit is recognized by the OMG network, the owner is able to make transactions on the OMG network.
      * @param _depositTx RLP encoded transaction to act as the deposit.
      */
     function deposit(bytes calldata _depositTx) external payable {
